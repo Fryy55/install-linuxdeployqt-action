@@ -3,13 +3,57 @@ author: Fryy_55
 description: An action for installing linuxdeployqt on x64/ARM64 Linux runners
 inputs:
   arch:
-    description: "Desired ISA for installation. Uses runner's ISA by default. Possible values: `x64`, `arm64` and aliases `amd64`, `arm` respectively"
+    description: "Desired ISA for installation. Uses runner's ISA by default. Supported values: `x64`, `arm64` and aliases `amd64`, `arm` respectively"
     required: false
+    default: ''
+  cache:
+    description: 'Whether or not to cache a tool on the runner. `true` by default'
+    required: false
+    default: true
+  tag:
+    description: 'Release tag of linuxdeployqt to download from. "continuous" by default'
+    required: false
+    default: 'continuous'
+  asset:
+    description: "Filename of the asset to download from a release with a tag. Note that using this will *ignore* the `arch` input"
+    required: false
+    default: ''
 runs:
   using: composite
   steps:
-    - shell: bash
-      run: 
+    - name: Verify platform
+      shell: bash
+      if: ${{ runner.os != 'Linux' }}
+      run: |
+        echo "::warning::This Action only works on Linux. Nothing will be done for ${{ runner.os }}"
+        exit 0
+
+    - name: Resolve cache
+      id: resolve_cache
+      shell: bash
+      env:
+        INPUT_ARCH: ${{ inputs.arch }}
+        RUNNER_ARCH: ${{ runner.arch }}
+        INPUT_TAG: ${{ inputs.tag }}
+        INPUT_ASSET: ${{ inputs.asset }}
+      run: ${{ github.action_path }}/src/resolve-cache.sh
+      # outputs: hash, link
+
+    - name: Check cache
+      if: ${{ inputs.cache }}
+      id: check_cache
+      uses: actions/cache@v5
+      with:
+        path: ${{ runner.tool_cache }}/linuxdeployqt/${{ steps.resolve_cache.outputs.hash }}
+        key: fryy55-linuxdeployqt-${{ steps.resolve_cache.outputs.hash }}
+
+    - name: Install
+      shell: bash
+      env:
+        INSTALL_PATH: ${{ runner.tool_cache }}/linuxdeployqt/${{ steps.resolve_cache.outputs.hash }}
+        CACHE_HIT: ${{ steps.check_cache.outputs.cache-hit }}
+        DOWNLOAD_LINK: ${{ steps.resolve_cache.outputs.link }}
+      run: ${{ github.action_path }}/src/install.sh
 branding:
   icon: download
   color: purple
