@@ -1,4 +1,4 @@
-echo $CACHE_HIT
+echo "->$CACHE_HIT<-"
 if [[ "$CACHE_HIT" == "true" ]]; then
 	echo '----- Cache hit. Skipping installation -----'
 else
