@@ -51,7 +51,7 @@ runs:
       shell: bash
       env:
         INSTALL_PATH: ${{ runner.tool_cache }}/linuxdeployqt/${{ steps.resolve_cache.outputs.hash }}
-        CACHE_HIT: ${{ steps.check_cache.outputs.cache-hit }}
+        CACHE_HIT: ${{ steps.check_cache.outputs.cache-hit == 'true' }}
         DOWNLOAD_LINK: ${{ steps.resolve_cache.outputs.link }}
       run: ${{ github.action_path }}/src/install.sh
 branding:
