@@ -9,7 +9,7 @@ echo "Using $tag as a release tag"
 
 if [[ -z "$INPUT_ASSET" ]]; then
 	if [[ -z "$INPUT_ARCH" ]]; then
-		if [[ "$RUNNER_ARCH" == "x64" ]]; then
+		if [[ "$RUNNER_ARCH" == "X64" ]]; then
 			arch="x86_64"
 		elif [[ "$RUNNER_ARCH" == "ARM64" ]]; then
 			arch="aarch64"
