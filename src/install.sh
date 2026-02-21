@@ -1,8 +1,7 @@
-echo "->$CACHE_HIT<-"
 if [[ "$CACHE_HIT" == "true" ]]; then
 	echo '----- Cache hit. Skipping installation -----'
 else
-	if [[ "$CACHE_HIT" == "false" ]]; then
+	if [[ "$INPUT_CACHE" == "true" ]]; then
 		echo "----- Cache miss. Downloading to $INSTALL_PATH -----"
 	else
 		echo "----- Ignoring cache. Downloading to $INSTALL_PATH -----"
