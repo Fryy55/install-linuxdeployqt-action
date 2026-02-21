@@ -24,12 +24,11 @@ runs:
     - name: Verify platform
       shell: bash
       if: ${{ runner.os != 'Linux' }}
-      run: |
-        echo "::warning::This Action only works on Linux. Nothing will be done for ${{ runner.os }}"
-        exit 0
+      run: echo "::warning::This Action only works on Linux. Nothing will be done for ${{ runner.os }}"
 
     - name: Resolve cache
       id: resolve_cache
+      if: ${{ runner.os == 'Linux' }}
       shell: bash
       env:
         INPUT_ARCH: ${{ inputs.arch }}
@@ -40,7 +39,7 @@ runs:
       # outputs: hash, link
 
     - name: Check cache
-      if: ${{ inputs.cache }}
+      if: ${{ runner.os == 'Linux' && inputs.cache }}
       id: check_cache
       uses: actions/cache@v5
       with:
@@ -48,6 +47,7 @@ runs:
         key: fryy55-linuxdeployqt-${{ steps.resolve_cache.outputs.hash }}
 
     - name: Install
+      if: ${{ runner.os == 'Linux' }}
       shell: bash
       env:
         INSTALL_PATH: ${{ runner.tool_cache }}/linuxdeployqt/${{ steps.resolve_cache.outputs.hash }}
