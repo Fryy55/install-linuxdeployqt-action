@@ -1,0 +1,15 @@
+name: Install linuxdeployqt
+author: Fryy_55
+description: An action for installing linuxdeployqt on x64/ARM64 Linux runners
+inputs:
+  arch:
+    description: "Desired ISA for installation. Uses runner's ISA by default. Possible values: `x64`, `arm64` and aliases `amd64`, `arm` respectively"
+    required: false
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      run: 
+branding:
+  icon: download
+  color: purple
